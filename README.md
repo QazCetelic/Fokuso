@@ -1,6 +1,6 @@
 # Fokuso
 
-A Fabric Minecraft (1.18) mod for Chat filtering using a filter list system to remove spam in chat which is sent on third party servers.
+A Fabric Minecraft (1.18) mod for client-side chat filtering using a filter list system to remove spam in chat which is sent on third party servers.
 You can add filters with files containing regex patterns, or even implement a `ChatFilter` with your own code.
 
 ## Commands

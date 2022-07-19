@@ -23,8 +23,6 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 public class FokusoClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        System.out.println("FokusoClient initializing...");
-        
         List<ChatFilterGroup> loadedGroups = ChatFilterSystem.reloadFilterGroups();
         System.out.println("Loaded " + loadedGroups.size() + " filter groups.");
         CommandDispatcher<FabricClientCommandSource> commandDispatcher = ClientCommandManager.DISPATCHER;
@@ -61,8 +59,6 @@ public class FokusoClient implements ClientModInitializer {
                 return 1;
             }))
         );
-        
-        System.out.println("FokusoClient initialized");
     }
     
     private CompletableFuture<Suggestions> getFilterListSuggestions(SuggestionsBuilder builder) {

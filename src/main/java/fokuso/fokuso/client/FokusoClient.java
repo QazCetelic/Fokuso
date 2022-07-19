@@ -23,8 +23,10 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 public class FokusoClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        List<ChatFilterGroup> loadedGroups = ChatFilterSystem.reloadFilterGroups();
-        System.out.println("Loaded " + loadedGroups.size() + " filter groups.");
+        {
+            List<ChatFilterGroup> groups = ChatFilterSystem.reloadFilterGroups();
+            System.out.println(groups.size() + " filters loaded!");
+        }
         CommandDispatcher<FabricClientCommandSource> commandDispatcher = ClientCommandManager.DISPATCHER;
         commandDispatcher.register(literal("chatfilters")
             .then(literal("toggle").then(argument("list", StringArgumentType.word())

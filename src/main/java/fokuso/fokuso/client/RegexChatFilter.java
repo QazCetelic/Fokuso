@@ -23,7 +23,6 @@ public class RegexChatFilter extends ChatFilter {
      *              <ul>
      *                  <li>p: Username prefix</li>
      *                  <li>u: Username</li>
-     *                  <li>i: The username of the current player</li>
      *              </ul>
      * @param ignoreOwnMessages Whether to ignore messages from the player itself.
      * @param stripFormattingCodes Whether to strip formatting codes from the message before regex match.
@@ -31,8 +30,7 @@ public class RegexChatFilter extends ChatFilter {
     public RegexChatFilter(String regex, boolean ignoreOwnMessages, boolean stripFormattingCodes) {
         this.regex = regex
                 .replace("\\p", USERNAME_PREFIX_REGEX)
-                .replace("\\u", USERNAME_REGEX)
-                .replace("\\i", MinecraftClient.getInstance().player.getName().getString());
+                .replace("\\u", USERNAME_REGEX);
         predicate = Pattern.compile(this.regex).asPredicate();
         this.ignoreOwnMessages = ignoreOwnMessages;
         this.stripFormattingCodes = stripFormattingCodes;

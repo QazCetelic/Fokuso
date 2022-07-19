@@ -62,7 +62,6 @@ public class ChatFilterSystem {
             File config = new File(MinecraftClient.getInstance().runDirectory, "config");
             File fokuso = new File(config, "fokuso");
             if (fokuso.exists() && fokuso.isDirectory()) {
-                System.out.println("Fokuso directory exists, loading configuration files...");
                 for (File file : fokuso.listFiles()) {
                     List<ChatFilter> filters = new ArrayList<>();
     
@@ -83,7 +82,6 @@ public class ChatFilterSystem {
                     }
                     groups.add(group);
                     addFilterGroup(group);
-                    System.out.println("Loading filters: " + file.getName());
                 }
             }
             else {
@@ -96,6 +94,7 @@ public class ChatFilterSystem {
             }
         }
         catch (Exception e) {
+            e.printStackTrace();
             System.err.println("Failed to load filters:");
         }
         return groups;

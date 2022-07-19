@@ -4,11 +4,14 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class ChatFilterSystem {
+    public static final String FILE_EXTENSION = ".filters";
     public static List<ChatFilter> filters = new ArrayList<>();
     private static List<ChatFilterGroup> groups = null;
     
@@ -62,7 +65,13 @@ public class ChatFilterSystem {
             File config = new File(MinecraftClient.getInstance().runDirectory, "config");
             File fokuso = new File(config, "fokuso");
             if (fokuso.exists() && fokuso.isDirectory()) {
-                for (File file : fokuso.listFiles()) {
+                List<File> filterLists = Files.walk(fokuso.toPath())
+                                              .map(Path::toFile)
+                                              .filter(File::isFile)
+                                              .filter(f -> f.getName().endsWith(FILE_EXTENSION))
+                                              .toList();
+                
+                for (File file : filterLists) {
                     List<ChatFilter> filters = new ArrayList<>();
     
                     Scanner scanner = new Scanner(file);
@@ -75,7 +84,7 @@ public class ChatFilterSystem {
                     }
                     
                     boolean isDisabled = file.getName().endsWith(".disabled");
-                    String name = file.getName().replaceFirst("\\.\\w+$", "").replace(" ", "-");
+                    String name = file.getName().replaceFirst("\\"+FILE_EXTENSION+"$", "").replaceAll("\s", "-");
                     ChatFilterGroup group = new ChatFilterGroup(name, filters);
                     if (isDisabled) {
                         group.setEnabled(false);

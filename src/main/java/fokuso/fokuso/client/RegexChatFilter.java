@@ -65,4 +65,9 @@ public class RegexChatFilter extends ChatFilter {
     public String toString() {
         return "/" + regex + "/";
     }
+    
+    @Override
+    public int hashCode() {
+        return regex.hashCode();
+    }
 }

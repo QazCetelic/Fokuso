@@ -26,7 +26,7 @@ public class ChatFilterSystem {
      */
     public static boolean filter(Text text) {
         for (ChatFilter filter : filters) {
-            if (filter.getEnabled() && filter.filter(text) && !isOwnMessage(text)) {
+            if (filter.getEnabled() && filter.filter(text) && !ChatFilter.isOwnMessage(text)) {
                 return true;
             }
         }
@@ -37,10 +37,6 @@ public class ChatFilterSystem {
         return filters;
     }
     
-    public static void addFilterGroup(ChatFilterGroup group) {
-        filters.addAll(group.getFilters());
-    }
-    
     public static ChatFilterGroup getFilterGroupOrNull(String name) {
         for (ChatFilterGroup group : getGroups()) {
             if (group.getName().equals(name)) {
@@ -48,10 +44,6 @@ public class ChatFilterSystem {
             }
         }
         return null;
-    }
-    
-    private static boolean isOwnMessage(Text text) {
-        return text.getString().startsWith("<" + MinecraftClient.getInstance().player.getName().getString() + "> ");
     }
     
     public static List<ChatFilterGroup> reloadFilterGroups() {
@@ -85,12 +77,11 @@ public class ChatFilterSystem {
                     
                     boolean isDisabled = file.getName().endsWith(".disabled");
                     String name = file.getName().replaceFirst("\\"+FILE_EXTENSION+"$", "").replaceAll("\s", "-");
-                    ChatFilterGroup group = new ChatFilterGroup(name, filters);
+                    ChatFilterGroup group = new ChatFilterGroup(name, filters, true);
                     if (isDisabled) {
                         group.setEnabled(false);
                     }
-                    groups.add(group);
-                    addFilterGroup(group);
+                    filters.add(group);
                 }
             }
             else {

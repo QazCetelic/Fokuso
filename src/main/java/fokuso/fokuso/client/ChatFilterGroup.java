@@ -1,29 +1,49 @@
 package fokuso.fokuso.client;
 
+import net.minecraft.text.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChatFilterGroup {
+public class ChatFilterGroup extends ChatFilter {
     private final List<ChatFilter> filters;
     private final String name;
+    private final boolean ignoreOwnMessages;
     
     public String getName() {
         return name;
     }
     
-    public ChatFilterGroup(String name, List<ChatFilter> filters) {
+    public ChatFilterGroup(String name, List<ChatFilter> filters, boolean ignoreOwnMessage) {
         this.filters = new ArrayList<>(filters);
         this.name = name;
+        this.ignoreOwnMessages = ignoreOwnMessage;
     }
     
     public List<ChatFilter> getFilters() {
         return filters;
     }
     
-    public void setEnabled(boolean enabled) {
+    @Override
+    public boolean ignoreOwnMessages() {
+        return ignoreOwnMessages;
+    }
+    
+    @Override
+    public boolean filter(Text text) {
+        for (ChatFilter filter : filters) {
+            if (filter.getEnabled() && filter.filter(text) && !ChatFilter.isOwnMessage(text)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean setEnabled(boolean enabled) {
         for (ChatFilter filter : filters) {
             filter.setEnabled(enabled);
         }
+        return enabled;
     }
     
     public boolean isEnabled() {

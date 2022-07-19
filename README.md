@@ -19,10 +19,9 @@ Enable or disable a specific filter list.
 
 ## Regex filter list files
 
-Filter lists can be added by adding files to the `fokuso` config folder.
+Filter lists can be added by adding files to the `fokuso` config folder with the `.filters` file extension.
 Each line is a different regex pattern.
 Empty lines and comments (lines starting with `#`) are ignored.
-Any or no file extension is valid.
 It's possible to use several shortcuts in the regex filters, e.g. `\u` for usernames.
 
 | Shortcut character | Meaning                            |

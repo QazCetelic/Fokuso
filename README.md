@@ -29,7 +29,6 @@ It's possible to use several shortcuts in the regex filters, e.g. `\u` for usern
 |:------------------:|------------------------------------|
 |         p          | Username prefix                    |
 |         u          | Username                           |
-|         i          | The username of the current player |
 
 ```regexp
 # Simple filter to remove all messages regarding achieved achievements.

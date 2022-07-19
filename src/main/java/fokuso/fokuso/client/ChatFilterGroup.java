@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatFilterGroup {
-    public static List<ChatFilterGroup> groups = new ArrayList<>();
     private final List<ChatFilter> filters;
     private final String name;
     

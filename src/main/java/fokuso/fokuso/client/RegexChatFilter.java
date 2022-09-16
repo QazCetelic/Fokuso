@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 
 public class RegexChatFilter extends ChatFilter {
     // language=RegExp
-    public static final String USERNAME_PREFIX_REGEX = "<[^>\s\n]{2,}> ";
+    public static final String USERNAME_PREFIX_REGEX = "<[^>\s\n]{2,}>";
     // using: https://help.minecraft.net/hc/en-us/articles/4408950195341-Minecraft-Java-Edition-Username-VS-Gamertag-FAQ
     // language=RegExp
     public static final String USERNAME_REGEX = "[a-zA-Z0-9_]{3,16}";

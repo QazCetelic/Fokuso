@@ -52,23 +52,30 @@ public class ChatFilterSystem {
     }
     
     public static List<ChatFilterGroup> loadChatFilterGroups() {
+        FokusoClient.LOGGER.debug("Loading chat filter groups...");
         List<ChatFilterGroup> groups = new ArrayList<>();
         try {
             File config = new File(MinecraftClient.getInstance().runDirectory, "config");
             File fokuso = new File(config, "fokuso");
             if (fokuso.exists() && fokuso.isDirectory()) {
+                FokusoClient.LOGGER.debug("Found fokuso config directory");
+                
                 List<File> filterLists = Files.walk(fokuso.toPath())
                                               .map(Path::toFile)
                                               .filter(File::isFile)
                                               .filter(f -> f.getName().endsWith(FILE_EXTENSION))
                                               .toList();
+    
+                FokusoClient.LOGGER.debug("Found " + filterLists.size() + " filter lists");
                 
                 for (File file : filterLists) {
                     List<ChatFilter> filters = new ArrayList<>();
     
+                    FokusoClient.LOGGER.debug("Loading filter list from {}", file.getName());
                     Scanner scanner = new Scanner(file);
                     while (scanner.hasNext()) {
                         String line = scanner.nextLine();
+                        FokusoClient.LOGGER.debug("Loading filter: '{}'", line);
                         // Allow comments and blank lines
                         if (line.startsWith("#") || line.matches("\\s*")) continue;
                         ChatFilter filter = new RegexChatFilter(line);
@@ -81,21 +88,29 @@ public class ChatFilterSystem {
                     if (isDisabled) {
                         group.setEnabled(false);
                     }
-                    filters.add(group);
+                    groups.add(group);
                 }
             }
             else {
                 if (fokuso.exists()) {
-                    System.out.println("Deleting Fokuso file");
-                    fokuso.delete();
+                    if (fokuso.delete()) {
+                        FokusoClient.LOGGER.warn("Fokuso config directory was a file, and thus, deleted.");
+                    }
+                    else {
+                        FokusoClient.LOGGER.error("Fokuso config directory was a file, but could not be deleted.");
+                    }
                 }
-                System.out.println("Creating Fokuso config directory");
-                fokuso.mkdirs();
+                if (fokuso.mkdirs()) {
+                    FokusoClient.LOGGER.info("Created Fokuso config directory");
+                }
+                else {
+                    FokusoClient.LOGGER.error("Could not create Fokuso directory");
+                }
             }
         }
         catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Failed to load filters:");
+            FokusoClient.LOGGER.error("Failed to load filters");
         }
         return groups;
     }

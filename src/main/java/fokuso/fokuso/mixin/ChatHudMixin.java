@@ -1,6 +1,7 @@
 package fokuso.fokuso.mixin;
 
 import fokuso.fokuso.client.ChatFilterSystem;
+import fokuso.fokuso.client.FokusoClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;
@@ -15,10 +16,10 @@ public abstract class ChatHudMixin {
     private void addMessage(Text message, int messageId, int timestamp, boolean refresh, CallbackInfo info) {
         if (ChatFilterSystem.filter(message)) {
             info.cancel();
-            System.out.println("Filtered message: " + message.getString());
+            FokusoClient.LOGGER.debug("Filtered message: " + message.getString());
         }
         else {
-            System.out.println("Pass: " + message.getString());
+            FokusoClient.LOGGER.debug("Message not filtered: " + message.getString());
         }
     }
 }

@@ -1,6 +1,5 @@
 package fokuso.fokuso.client;
 
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 import java.util.function.Predicate;
@@ -50,7 +49,7 @@ public class RegexChatFilter extends ChatFilter {
             string = string.replaceAll("[§?][0-9a-or]", "");
         }
         boolean matches = predicate.test(string);
-        System.out.println("Regex '" + regex + "':'" + string + "' matches: " + matches);
+        FokusoClient.LOGGER.debug("Regex '" + regex + "':'" + string + "' matches: " + matches);
         return matches;
     }
     

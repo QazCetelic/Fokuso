@@ -5,12 +5,15 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import fokuso.fokuso.Fokuso;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.minecraft.text.LiteralText;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -21,11 +24,13 @@ import static net.fabricmc.fabric.api.client.command.v1.ClientCommandManager.lit
 
 @Environment(EnvType.CLIENT)
 public class FokusoClient implements ClientModInitializer {
+    public static final Logger LOGGER = LoggerFactory.getLogger(FokusoClient.class);
+
     @Override
     public void onInitializeClient() {
         {
             List<ChatFilterGroup> groups = ChatFilterSystem.reloadFilterGroups();
-            System.out.println(groups.size() + " filters loaded!");
+            LOGGER.info("Loaded " + groups.size() + " chat filter groups.");
         }
         CommandDispatcher<FabricClientCommandSource> commandDispatcher = ClientCommandManager.DISPATCHER;
         commandDispatcher.register(literal("chatfilters")

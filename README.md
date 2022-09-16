@@ -5,15 +5,15 @@ You can add filters with files containing regex patterns, or even implement a `C
 
 ## Commands
 
-### `/chatfilter list`
+### `/chatfilters list`
 
 Lists all currently loaded filter lists and how many of their filters are enabled.
 
-### `/chatfilter reload`
+### `/chatfilters reload`
 
 Loads filter lists from config folder
 
-### `/chatfilter toggle <list> <enabled>`
+### `/chatfilters toggle <list> <enabled>`
 
 Enable or disable a specific filter list.
 

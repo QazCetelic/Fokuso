@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import fokuso.fokuso.Fokuso;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -16,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -28,10 +28,8 @@ public class FokusoClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        {
-            List<ChatFilterGroup> groups = ChatFilterSystem.reloadFilterGroups();
-            LOGGER.info("Loaded " + groups.size() + " chat filter groups.");
-        }
+        ChatFilterSystem.reloadFilterGroups();
+        
         CommandDispatcher<FabricClientCommandSource> commandDispatcher = ClientCommandManager.DISPATCHER;
         commandDispatcher.register(literal("chatfilters")
             .then(literal("toggle").then(argument("list", StringArgumentType.word())
@@ -40,14 +38,14 @@ public class FokusoClient implements ClientModInitializer {
                 .executes(context -> {
                     String listName = StringArgumentType.getString(context, "list");
                     boolean enabled = BoolArgumentType.getBool(context, "enabled");
-                    ChatFilterGroup group = ChatFilterSystem.getFilterGroupOrNull(listName);
-                    if (group == null) {
+                    Optional<ChatFilterGroup> group = ChatFilterSystem.getFilterGroup(listName);
+                    if (group.isEmpty()) {
                         String error = "Unable to find " + listName + " filter group";
                         context.getSource().sendError(new LiteralText(error));
                         return -1;
                     }
                     else {
-                        group.setEnabled(enabled);
+                        group.get().setEnabled(enabled);
                         String feedback = "Filters " + listName + " are now " + (enabled ? "enabled" : "disabled");
                         context.getSource().sendFeedback(new LiteralText(feedback));
                         return 1;
@@ -55,8 +53,8 @@ public class FokusoClient implements ClientModInitializer {
                 }))
             ))
             .then(literal("reload").executes(context -> {
-                List<ChatFilterGroup> groups = ChatFilterSystem.reloadFilterGroups();
-                context.getSource().sendFeedback(new LiteralText(groups.size() + " filters loaded!"));
+                ChatFilterSystem.reloadFilterGroups();
+                context.getSource().sendFeedback(new LiteralText(ChatFilterSystem.getGroups().size() + " filters loaded!"));
                 return 1;
             }))
             .then(literal("list").executes(context -> {

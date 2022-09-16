@@ -8,11 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class ChatFilterSystem {
     public static final String FILE_EXTENSION = ".filters";
-    public static List<ChatFilter> filters = new ArrayList<>();
     private static List<ChatFilterGroup> groups = null;
     
     public static List<ChatFilterGroup> getGroups() {
@@ -25,32 +25,21 @@ public class ChatFilterSystem {
      * @return Whether the messages should be filtered out.
      */
     public static boolean filter(Text text) {
-        for (ChatFilter filter : filters) {
-            if (filter.getEnabled() && filter.filter(text) && !ChatFilter.isOwnMessage(text)) {
-                FokusoClient.LOGGER.debug("Filtered message: '{}'", text.getString());
-                return true;
-            }
-        }
-        FokusoClient.LOGGER.debug("Message not filtered: '{}'", text.getString());
-        return false;
+        boolean match = getGroups().stream().anyMatch(filter -> filter.getEnabled() && filter.filter(text) && !ChatFilter.isOwnMessage(text));
+        FokusoClient.LOGGER.debug("Message {}filtered: '{}'", match ? "" : "not ", text.getString());
+        return match;
     }
     
-    public static List<ChatFilter> getFilters() {
-        return filters;
-    }
-    
-    public static ChatFilterGroup getFilterGroupOrNull(String name) {
-        for (ChatFilterGroup group : getGroups()) {
-            if (group.getName().equals(name)) {
-                return group;
-            }
-        }
-        return null;
-    }
-    
-    public static List<ChatFilterGroup> reloadFilterGroups() {
+    public static void reloadFilterGroups() {
         groups = loadChatFilterGroups();
-        return groups;
+    }
+    
+    public static Optional<ChatFilterGroup> getFilterGroup(String name) {
+        return getGroups().stream().filter(group -> group.getName().equals(name)).findAny();
+    }
+    
+    public static boolean addFilterGroup(ChatFilterGroup group) {
+        return groups.add(group);
     }
     
     public static List<ChatFilterGroup> loadChatFilterGroups() {
@@ -68,7 +57,7 @@ public class ChatFilterSystem {
                                               .filter(f -> f.getName().endsWith(FILE_EXTENSION))
                                               .toList();
     
-                FokusoClient.LOGGER.debug("Found " + filterLists.size() + " filter lists");
+                FokusoClient.LOGGER.debug("Found {} filter lists", filterLists.size());
                 
                 for (File file : filterLists) {
                     List<ChatFilter> filters = new ArrayList<>();
@@ -84,12 +73,10 @@ public class ChatFilterSystem {
                         filters.add(filter);
                     }
                     
-                    boolean isDisabled = file.getName().endsWith(".disabled");
                     String name = file.getName().replaceFirst("\\"+FILE_EXTENSION+"$", "").replaceAll("\s", "-");
                     ChatFilterGroup group = new ChatFilterGroup(name, filters, true);
-                    if (isDisabled) {
-                        group.setEnabled(false);
-                    }
+                    boolean isDisabled = file.getName().endsWith(".disabled");
+                    group.setEnabled(!isDisabled);
                     groups.add(group);
                 }
             }
@@ -114,6 +101,7 @@ public class ChatFilterSystem {
             e.printStackTrace();
             FokusoClient.LOGGER.error("Failed to load filters");
         }
+        FokusoClient.LOGGER.info("Loaded {} chat filter groups.", groups.size());
         return groups;
     }
 }

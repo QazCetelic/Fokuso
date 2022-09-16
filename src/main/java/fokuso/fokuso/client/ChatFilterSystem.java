@@ -27,9 +27,11 @@ public class ChatFilterSystem {
     public static boolean filter(Text text) {
         for (ChatFilter filter : filters) {
             if (filter.getEnabled() && filter.filter(text) && !ChatFilter.isOwnMessage(text)) {
+                FokusoClient.LOGGER.debug("Filtered message: '{}'", text.getString());
                 return true;
             }
         }
+        FokusoClient.LOGGER.debug("Message not filtered: '{}'", text.getString());
         return false;
     }
     

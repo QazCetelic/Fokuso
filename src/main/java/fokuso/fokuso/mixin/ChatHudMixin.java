@@ -16,10 +16,6 @@ public abstract class ChatHudMixin {
     private void addMessage(Text message, int messageId, int timestamp, boolean refresh, CallbackInfo info) {
         if (ChatFilterSystem.filter(message)) {
             info.cancel();
-            FokusoClient.LOGGER.debug("Filtered message: " + message.getString());
-        }
-        else {
-            FokusoClient.LOGGER.debug("Message not filtered: " + message.getString());
         }
     }
 }

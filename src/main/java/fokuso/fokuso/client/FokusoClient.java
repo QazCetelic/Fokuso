@@ -69,15 +69,11 @@ public class FokusoClient implements ClientModInitializer {
     }
     
     private CompletableFuture<Suggestions> getFilterListSuggestions(SuggestionsBuilder builder) {
-        List<String> groupNames = ChatFilterSystem
+        ChatFilterSystem
                 .getGroups()
                 .stream()
                 .map(ChatFilterGroup::getName)
-                .toList();
-        
-        for (String s : groupNames) {
-            builder.suggest(s);
-        }
+                .forEach(builder::suggest);
         
         return builder.buildFuture();
     }

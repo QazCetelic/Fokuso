@@ -1,7 +1,6 @@
 package fokuso.fokuso.mixin;
 
 import fokuso.fokuso.client.ChatFilterSystem;
-import fokuso.fokuso.client.FokusoClient;
 import net.minecraft.client.gui.hud.ChatHud;
 import net.minecraft.text.Text;
 import org.spongepowered.asm.mixin.Mixin;

@@ -10,11 +10,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ChatHud.class)
 public abstract class ChatHudMixin {
-    
-    @Inject(at = @At("HEAD"), method = "addMessage(Lnet/minecraft/text/Text;IIZ)V", cancellable = true)
-    private void addMessage(Text message, int messageId, int timestamp, boolean refresh, CallbackInfo info) {
+    // "addMessage(Lnet/minecraft/text/Text;IIZ)V"
+    @Inject(at = @At("HEAD"), method = "addMessage(Lnet/minecraft/text/Text;)V", cancellable = true)
+    //private void addMessage(Text message, int messageId, int timestamp, boolean refresh, CallbackInfo info) {
+    private void addMessage(Text message, CallbackInfo ci) {
         if (ChatFilterSystem.filter(message)) {
-            info.cancel();
+            ci.cancel();
         }
     }
 }
